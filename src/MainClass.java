@@ -27,8 +27,7 @@ public class MainClass {
 		
 		
 		
-		for(Integer i : plotsProfitability)
-			System.out.println(i);
+		
 		
 		int nrOfThreads = Runtime.getRuntime().availableProcessors();
 		
@@ -39,7 +38,7 @@ public class MainClass {
 			oddInterval=true; 
 		
 		final int step = plotsProfitability.length/nrOfThreads; 
-		System.out.println(step);
+		
 		
 		for(int i = 0 ; i < nrOfThreads; i++ ){
 			final int i_final = i;
@@ -76,18 +75,18 @@ public class MainClass {
 
 				private int countProfitability(int i, int j) {
 					
-					System.out.println("count profitability from : " + i + " to : " + j  );
+					
 					int sum=0;
 					for(;i<=j;i++)
 						sum+=plotsProfitability[i];
-					System.out.println(" = "+ sum );
+					
 					return sum;
 				}
 			}).start();
 		}
 		
 		latch.await();
-		System.out.println(result);
+		
 		
 		
 		final List<Integer> bestProfitable = new LinkedList<>();
