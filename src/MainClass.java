@@ -1,8 +1,10 @@
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class MainClass {
@@ -12,6 +14,7 @@ public class MainClass {
 	static List<Integer> result = new LinkedList<>();
 	
 	static CountDownLatch latch ;
+	static CountDownLatch latch2 ;
 	
 	public static void main(String[] args) throws InterruptedException {
 		
@@ -24,14 +27,14 @@ public class MainClass {
 			System.out.println(i);
 		
 		int nrOfThreads = Runtime.getRuntime().availableProcessors();
-		int expectedProfitability = Integer.parseInt(args[0]);
+		int plotsForSale = Integer.parseInt(args[0]);
 		latch=new CountDownLatch(nrOfThreads);
 		
 		boolean oddInterval = false;
 		if(plotsProfitability.length%2==0) 
 			oddInterval=true; 
 		
-		final int step = plotsProfitability.length/2; 
+		final int step = plotsProfitability.length/nrOfThreads; 
 		System.out.println(step);
 		
 		for(int i = 0 ; i < nrOfThreads; i++ ){
@@ -77,11 +80,47 @@ public class MainClass {
 		latch.await();
 		System.out.println(result);
 		
-		int index = 1;
-		for(Integer i :  result){
-			System.out.println( index + " --> " + i);
-			index++;
+		
+		final List<Integer> bestProfitable = new LinkedList<>();
+		latch2=new CountDownLatch(1);
+		//search for most profitable plots
+		
+	
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				Integer maxProfit = Collections.max(result);
+				
+				int sizeOfList = result.size();
+				for(int i = 2 ; i < sizeOfList; i+=3){
+					if(result.get(i).equals(maxProfit))
+						bestProfitable.add(i);
+				}
+				latch2.countDown();
+				
+			}
+		}).start();
+		
+		//show most profitable
+		int currentSpan=plotsForSale;
+		int indexFinal=0;;
+		latch2.await();
+		for(Integer i : bestProfitable){
+			int span = result.get(i-1) - result.get(i-2);
+			if(currentSpan>span)
+				indexFinal=i;
+				
 		}
+		//change for human numbering
+		int startOfResult = result.get(indexFinal-2) +1;
+		int endOfResult = result.get(indexFinal-1) + 1;
+		System.out.println(startOfResult + " " + endOfResult + " " 
+							+ result.get(indexFinal)); 
+		
+		
 		
 	}
 	
