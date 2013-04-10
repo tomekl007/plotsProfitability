@@ -66,20 +66,18 @@ public class MainClass {
 									result.add(profitability);
 								}
 							}
-						//System.out.println(i +""+ Thread.currentThread().getName()+ " -> " 
-							//				+ plotsProfitability[i]);
+					
 						}
 					}
 					latch.countDown();
 				}
 
 				private int countProfitability(int i, int j) {
-					
-					
+					//System.out.println("count profitability from : " + i + " to : " + j );
 					int sum=0;
 					for(;i<=j;i++)
-						sum+=plotsProfitability[i];
-					
+					sum+=plotsProfitability[i];
+					//System.out.println(" = "+ sum );
 					return sum;
 				}
 			}).start();
@@ -99,10 +97,17 @@ public class MainClass {
 			
 			@Override
 			public void run() {
-				
-				Integer maxProfit = Collections.max(result);
-				
 				int sizeOfList = result.size();
+				List<Integer> resultProfit = new LinkedList<>();
+				for(int i = 2 ; i < sizeOfList; i+=3){
+					resultProfit.add(result.get(i));
+				}
+				
+				
+				Integer maxProfit = Collections.max(resultProfit);
+				//System.out.println("max profit : " + maxProfit);
+				
+				
 				for(int i = 2 ; i < sizeOfList; i+=3){
 					if(result.get(i).equals(maxProfit))
 						bestProfitable.add(i);
@@ -112,16 +117,18 @@ public class MainClass {
 			}
 		}).start();
 		
-		//show most profitable
+		//showing most profitable
+		//System.out.println(result);
 		int currentSpan=plotsForSale;
-		int indexFinal=0;;
+		int indexFinal=0;
 		latch2.await();
 		for(Integer i : bestProfitable){
 			int span = result.get(i-1) - result.get(i-2);
-			if(currentSpan>span)
+			if(currentSpan>=span)
 				indexFinal=i;
 				
 		}
+		
 		//change for human numbering
 		int startOfResult = result.get(indexFinal-2) +1;
 		int endOfResult = result.get(indexFinal-1) + 1;
