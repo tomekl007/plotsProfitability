@@ -31,7 +31,7 @@ public class MainClass {
 		latch=new CountDownLatch(nrOfThreads);
 		
 		boolean oddInterval = false;
-		if(plotsProfitability.length%2==0) 
+		if(plotsProfitability.length%2!=0) 
 			oddInterval=true; 
 		
 		final int step = plotsProfitability.length/nrOfThreads; 
@@ -39,12 +39,17 @@ public class MainClass {
 		
 		for(int i = 0 ; i < nrOfThreads; i++ ){
 			final int i_final = i;
+			final boolean oddIntervar_final=oddInterval;
 			new Thread(new Runnable() {
 				
 				@Override
 				public void run() {
 					int start = i_final*step;
-					int end = (i_final+1)*step;
+					int end;
+					if(oddIntervar_final)
+						end = (i_final+1)*step+1;
+					else
+						end = (i_final+1)*step;
 					
 					for(int i = 0; i < plotsProfitability.length; i++ ){
 						for(int j = start ; j < end; j++){	
