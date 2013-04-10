@@ -18,16 +18,20 @@ public class MainClass {
 	
 	public static void main(String[] args) throws InterruptedException {
 		
-		final int plotsProfitability [] = new int[args.length-1];
-		for(int i = 1; i < args.length; i++){
+		
+		int plotsForSale = Integer.parseInt(args[0]);
+		final int plotsProfitability [] = new int[plotsForSale];
+		for(int i = 1; i < plotsForSale+1; i++){
 		 plotsProfitability[i-1]= Integer.valueOf(args[i]);
 		}
+		
+		
 		
 		for(Integer i : plotsProfitability)
 			System.out.println(i);
 		
 		int nrOfThreads = Runtime.getRuntime().availableProcessors();
-		int plotsForSale = Integer.parseInt(args[0]);
+		
 		latch=new CountDownLatch(nrOfThreads);
 		
 		boolean oddInterval = false;
